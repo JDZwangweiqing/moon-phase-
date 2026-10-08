@@ -101,14 +101,14 @@
 <canvas id="ov" width="2990" height="1598"></canvas>
 <div id="panel">
   <h1>月相原理 · 3D 演示</h1>
-  <div id="phaseName">娥眉月</div>
+  <div id="phaseName">残月</div>
   <canvas id="phaseCv" width="132" height="132"></canvas>
-  <div class="info"><span id="illu">照亮 15%</span><span id="age">月龄 3.7 天</span></div>
+  <div class="info"><span id="illu">照亮 3%</span><span id="age">月龄 28.0 天</span></div>
   <div class="row">
     <button id="btnPlay">播放</button>
     <label class="spd">速度<input id="speed" type="range" min="0" max="2.5" step="0.1" value="1"></label>
   </div>
-  <div class="grid8" id="phaseBtns"><button data-deg="0" class="">新月</button><button data-deg="45" class="on">娥眉月</button><button data-deg="90" class="">上弦月</button><button data-deg="135" class="">盈凸月</button><button data-deg="180" class="">满月</button><button data-deg="225" class="">亏凸月</button><button data-deg="270" class="">下弦月</button><button data-deg="315" class="">残月</button></div>
+  <div class="grid8" id="phaseBtns"><button data-deg="0" class="">新月</button><button data-deg="45" class="">娥眉月</button><button data-deg="90" class="">上弦月</button><button data-deg="135" class="">盈凸月</button><button data-deg="180" class="">满月</button><button data-deg="225" class="">亏凸月</button><button data-deg="270" class="">下弦月</button><button data-deg="315" class="">残月</button></div>
   <div class="views">
     <button data-view="oblique" class="on">斜视</button>
     <button data-view="top">俯视</button>
@@ -125,7 +125,7 @@
   </div>
   <div style="font-size:12px;color:#9fb0c8;line-height:1.7;margin:4px 2px 6px;">
     <div id="inclTxt">黄白交角 5.300°（均值 5.145°）</div>
-    <div id="nodeTxt">升交点黄经 0.0° · 月球黄纬 -3.75°</div>
+    <div id="nodeTxt">升交点黄经 0.0° · 月球黄纬 +1.72°</div>
     <div id="eclTxt" style="color:#ffd98a;">（朔/望时按 |β| 判断是否可能发生食）</div>
   </div>
   <div class="row toggles">
@@ -146,18 +146,18 @@
     <canvas id="lunarCv" width="612" height="600"></canvas>
         <div id="lunarBarBox" title="拖动查看太阴日内任意时刻（拖动时演示暂停）" style="position:relative;height:14px;margin-top:7px;cursor:pointer;touch-action:none;">
       <div style="position:absolute;left:0;right:0;top:3px;height:8px;border-radius:4px;background:rgba(255,255,255,.10);overflow:hidden;">
-      <div id="lunarBar" style="height: 100%; width: 6.7%; background: linear-gradient(90deg, rgb(255, 138, 92), rgb(255, 217, 138));"></div>
+      <div id="lunarBar" style="height: 100%; width: 78.5%; background: linear-gradient(90deg, rgb(255, 138, 92), rgb(255, 217, 138));"></div>
       </div>
-      <div id="lunarThumb" style="position: absolute; top: 0px; left: 6.7%; width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(rgb(255, 208, 138), rgb(255, 154, 85)); border: 2px solid rgb(255, 242, 220); box-shadow: rgba(0, 0, 0, 0.55) 0px 1px 5px, rgba(255, 255, 255, 0.5) 0px 1px 2px inset; transform: translateX(-50%); pointer-events: none;"></div>
+      <div id="lunarThumb" style="position: absolute; top: 0px; left: 78.5%; width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(rgb(255, 208, 138), rgb(255, 154, 85)); border: 2px solid rgb(255, 242, 220); box-shadow: rgba(0, 0, 0, 0.55) 0px 1px 5px, rgba(255, 255, 255, 0.5) 0px 1px 2px inset; transform: translateX(-50%); pointer-events: none;"></div>
     </div>
     <div id="demoRow"><button id="btnDemo" title="同时控制主图与本窗口：地球自转、月球自转与公转（月球公转即月相变化）" class="paused">播放（主图＋演示）</button></div>
     <canvas id="horCv" width="612" height="216"></canvas>
-    <label class="spd" style="margin-top:7px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="32"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">32°N</span></label>
+    <label class="spd" style="margin-top:7px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="30"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">30°N</span></label>
     <table id="riseTbl">
       <tbody><tr><th style="text-align:left;padding-left:8px;">事件</th><th>时间（距现在）</th><th>方位</th></tr>
-      <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">+17h05m</td><td id="aRise">90°（东）</td></tr>
-      <tr><td class="ev" style="color:#ffe2a8;">中天</td><td class="t" id="tCulm">+23h07m</td><td id="aCulm">175°（南）</td></tr>
-      <tr><td class="ev" style="color:#f0a998;">月落</td><td class="t" id="tSet">+4h39m</td><td id="aSet">270°（西）</td></tr>
+      <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">+24h09m</td><td id="aRise">91°（东）</td></tr>
+      <tr><td class="ev" style="color:#ffe2a8;">中天</td><td class="t" id="tCulm">+5h21m</td><td id="aCulm">180°（南）</td></tr>
+      <tr><td class="ev" style="color:#f0a998;">月落</td><td class="t" id="tSet">+11h44m</td><td id="aSet">271°（西）</td></tr>
     </tbody></table>
   </div>
 </div>
@@ -1273,6 +1273,7 @@ btnPlay.onclick=()=>{S.playing=!S.playing;S.holdPhase=false;syncPlayBtns();};
 document.getElementById('speed').oninput=e=>{S.speed=parseFloat(e.target.value);};
 
 const grid=document.getElementById('phaseBtns');
+grid.textContent='';                               // 幂等：清空后再生成，杜绝任何重跑导致的重复按钮
 for(const ph of PHASE8){
   const b=document.createElement('button');
   b.textContent=ph.name;b.dataset.deg=ph.deg;
@@ -1328,6 +1329,10 @@ const btnLunar=document.getElementById('btnLunar');
 const lunarWin=document.getElementById('lunarWin');
 const lunarBody=document.getElementById('lunarBody');
 const lunarChip=document.getElementById('lunarChip');
+/* 启动硬复位：太阴日演示默认不选中、放大窗口默认隐藏
+   （防预览软刷新在旧 DOM 上残留上一次会话的开窗/选中状态） */
+S.lunarDemo=false;btnLunar.classList.remove('on');
+lunarWin.style.display='none';lunarChip.style.display='none';
 const lunarBar=document.getElementById('lunarBar'),
       lunarThumb=document.getElementById('lunarThumb');
 const btnLunarMin=document.getElementById('btnLunarMin');
