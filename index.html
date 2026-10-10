@@ -115,7 +115,7 @@
   <h1>月相原理 · 3D 演示</h1>
   <div id="phaseName">娥眉月</div>
   <canvas id="phaseCv" width="132" height="132"></canvas>
-  <div class="info"><span id="illu">照亮 37%</span><span id="age">月龄 6.2 天</span></div>
+  <div class="info"><span id="illu">照亮 40%</span><span id="age">月龄 6.5 天</span></div>
   <div class="row">
     <button id="btnPlay">播放</button>
     <label class="spd">速度<input id="speed" type="range" min="0" max="2.5" step="0.1" value="1"></label>
@@ -137,7 +137,7 @@
   </div>
   <div style="font-size:12px;color:#9fb0c8;line-height:1.7;margin:4px 2px 6px;">
     <div id="inclTxt">黄白交角 5.300°（均值 5.145°）</div>
-    <div id="nodeTxt">升交点黄经 0.0° · 月球黄纬 -5.13°</div>
+    <div id="nodeTxt">升交点黄经 0.0° · 月球黄纬 -5.20°</div>
     <div id="eclTxt" style="color:#ffd98a;">（朔/望时按 |β| 判断是否可能发生食）</div>
   </div>
   <div class="row toggles">
@@ -148,45 +148,45 @@
     <label><input type="checkbox" id="ckIncl" checked="checked">黄道/白道面</label>
   </div>
   </div>
-<div id="lunarWin" style="display: block; width: 691px;">
+<div id="lunarWin" style="display: block;">
   <div class="lwHead">
     <span class="lwTitle">太阴日 · 放大演示<small>以地球为中心（俯视北极）</small></span>
-    <span class="lwBtn" id="btnLunarMax" title="放大 / 还原">❐</span>
+    <span class="lwBtn" id="btnLunarMax" title="放大 / 还原">⤢</span>
     <span class="lwBtn" id="btnLunarMin" title="收起">–</span>
     <span class="lwBtn" id="btnLunarClose" title="隐藏窗口">✕</span>
   </div>
   <div id="lunarBody" style="display: block;">
-    <canvas id="lunarCv" style="width: 665px; height: 652px;" width="1330" height="1304"></canvas>
+    <canvas id="lunarCv" style="width: 306px; height: 300px;" width="612" height="600"></canvas>
         <div id="lunarBarBox" title="拖动查看太阴日内任意时刻（拖动时演示暂停）" style="position:relative;height:14px;margin-top:7px;cursor:pointer;touch-action:none;">
       <div style="position:absolute;left:0;right:0;top:3px;height:8px;border-radius:4px;background:rgba(255,255,255,.10);overflow:hidden;">
-      <div id="lunarBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, rgb(255, 138, 92), rgb(255, 217, 138));"></div>
+      <div id="lunarBar" style="height:100%;width:0%;background:linear-gradient(90deg,#ff8a5c,#ffd98a);"></div>
       </div>
-      <div id="lunarThumb" style="position: absolute; top: 0px; left: 0%; width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(rgb(255, 208, 138), rgb(255, 154, 85)); border: 2px solid rgb(255, 242, 220); box-shadow: rgba(0, 0, 0, 0.55) 0px 1px 5px, rgba(255, 255, 255, 0.5) 0px 1px 2px inset; transform: translateX(-50%); pointer-events: none;"></div>
+      <div id="lunarThumb" style="position:absolute;top:0;left:0%;width:14px;height:14px;border-radius:50%;background:linear-gradient(180deg,#ffd08a,#ff9a55);border:2px solid #fff2dc;box-shadow:0 1px 5px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.5);transform:translateX(-50%);pointer-events:none;"></div>
     </div>
     <div id="demoRow"><button id="btnDemo" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停" class="paused">播放（演示）</button></div>
   </div>
 </div>
-<div id="horWin" style="display: block; right: 14px; top: 793px; width: 332px;">
+<div id="horWin" style="display: block; right: 14px; top: 441px;">
   <div class="lwHead">
     <span class="lwTitle">地平面 · 月球升落<small>一个太阴日</small></span>
     <span class="lwBtn" id="btnHorMax" title="放大 / 还原">⤢</span>
     <span class="lwBtn" id="btnHorClose" title="隐藏窗口">✕</span>
   </div>
   <div id="horBody">
-    <canvas id="horCv" style="width: 306px; height: 28px;" width="612" height="56"></canvas>
-    <label class="spd" style="margin-top:4px;">当前月相<input id="rgPhase" type="range" min="0" max="360" step="1" value="75" title="拖动演示当前月相（新月→上弦→满月→下弦→新月）"><span id="phaseVal">娥眉月</span></label>
-    <label class="spd" style="margin-top:3px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="44"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">44°N</span></label>
+    <canvas id="horCv" style="width: 306px; height: 95px;" width="612" height="190"></canvas>
+    <label class="spd" style="margin-top:4px;">当前月相<input id="rgPhase" type="range" min="0" max="360" step="1" value="79" title="拖动演示当前月相（新月→上弦→满月→下弦→新月）"><span id="phaseVal">娥眉月</span></label>
+    <label class="spd" style="margin-top:3px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="30"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">30°N</span></label>
     <table id="riseTbl">
       <tbody><tr><th style="text-align:left;padding-left:8px;">事件</th><th>时间（距现在）</th><th>方位</th></tr>
-      <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">+18h48m</td><td id="aRise">92°（东）</td></tr>
-      <tr><td class="ev" style="color:#ffe2a8;">中天</td><td class="t" id="tCulm">+24h50m</td><td id="aCulm">180°（南）</td></tr>
-      <tr><td class="ev" style="color:#f0a998;">月落</td><td class="t" id="tSet">+6h23m</td><td id="aSet">272°（西）</td></tr>
+      <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">+18h48m</td><td id="aRise">91°（东）</td></tr>
+      <tr><td class="ev" style="color:#ffe2a8;">中天</td><td class="t" id="tCulm">+0 min</td><td id="aCulm">180°（南）</td></tr>
+      <tr><td class="ev" style="color:#f0a998;">月落</td><td class="t" id="tSet">+6h23m</td><td id="aSet">271°（西）</td></tr>
     </tbody></table>
     <div id="lunarBarBox2" title="拖动查看太阴日内任意时刻（拖动时演示暂停）" style="position:relative;height:14px;margin-top:5px;cursor:pointer;touch-action:none;">
       <div style="position:absolute;left:0;right:0;top:3px;height:8px;border-radius:4px;background:rgba(255,255,255,.10);overflow:hidden;">
-      <div id="lunarBar2" style="height: 100%; width: 0%; background: linear-gradient(90deg, rgb(255, 138, 92), rgb(255, 217, 138));"></div>
+      <div id="lunarBar2" style="height:100%;width:0%;background:linear-gradient(90deg,#ff8a5c,#ffd98a);"></div>
       </div>
-      <div id="lunarThumb2" style="position: absolute; top: 0px; left: 0%; width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(rgb(255, 208, 138), rgb(255, 154, 85)); border: 2px solid rgb(255, 242, 220); box-shadow: rgba(0, 0, 0, 0.55) 0px 1px 5px, rgba(255, 255, 255, 0.5) 0px 1px 2px inset; transform: translateX(-50%); pointer-events: none;"></div>
+      <div id="lunarThumb2" style="position:absolute;top:0;left:0%;width:14px;height:14px;border-radius:50%;background:linear-gradient(180deg,#ffd08a,#ff9a55);border:2px solid #fff2dc;box-shadow:0 1px 5px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.5);transform:translateX(-50%);pointer-events:none;"></div>
     </div>
     <div id="demoRow2"><button id="btnDemo2" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停" class="paused">播放（演示）</button></div>
   </div>
@@ -1680,6 +1680,9 @@ window.__winReset=()=>{resetWinClock();lastLunarHud='';return true;};  // 测试
 function drawLunarDiagram(){
   const dpr=window.devicePixelRatio||1;
   const k=lunarScaleK(),cw=Math.round(LW*k),ch=Math.round(LH*k);
+  /* 自愈：放大态下窗口宽度与画布用同一 k（applyLunarMax 时若窗口处于收起/隐藏态，
+     chrome 高度失真会使窗宽按错误的 k 设置且不再更新 ⇒ 打开时窗宽异常、画布偏小） */
+  if(S.lunarMax&&lunarCv.offsetHeight>0)lunarWin.style.width=Math.round(LW*k+26)+'px';
   if(lunarCv.style.width!==cw+'px'){lunarCv.style.width=cw+'px';lunarCv.style.height=ch+'px';}
   if(lunarCv.width!==Math.round(cw*dpr)){
     lunarCv.width=Math.round(cw*dpr);lunarCv.height=Math.round(ch*dpr);}
