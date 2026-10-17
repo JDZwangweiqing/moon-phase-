@@ -118,19 +118,19 @@
 <canvas id="ov" width="2990" height="1598"></canvas>
 <div id="panel">
   <h1>月相原理 · 3D 演示</h1>
-  <div id="phaseName">娥眉月</div>
+  <div id="phaseName">残月</div>
   <canvas id="phaseCv" width="132" height="132"></canvas>
-  <div class="info"><span id="illu">照亮 36%</span><span id="age">月龄 6.1 天</span></div>
+  <div class="info"><span id="illu">照亮 15%</span><span id="age">月龄 25.8 天</span></div>
   <label class="spd" style="margin-top:2px;">日期<input id="inDate" type="date" style="flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
-    border-radius:6px;color:#e8ecf4;padding:3px 6px;font-size:12px;font-family:inherit;color-scheme:dark;" title="选择任意日期：全页（主图+两个浮动窗口）显示该日实际月相" value="2026-10-17"></label>
+    border-radius:6px;color:#e8ecf4;padding:3px 6px;font-size:12px;font-family:inherit;color-scheme:dark;" title="选择任意日期：全页（主图+两个浮动窗口）显示该日实际月相" value="2026-11-10"></label>
   <label class="spd" style="margin-top:4px;">地点<select id="selCity" style="flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
-    border-radius:6px;color:#e8ecf4;padding:3px 5px;font-size:12px;font-family:inherit;cursor:pointer;" title="选择观察地点：主图观测点与两个浮动窗口的观察者纬度同步更新（默认取本机定位，失败回退北京）"><option value="geo" selected="selected">使用我的位置</option><option value="39.91,116.4">北京</option><option value="31.23,121.47">上海</option><option value="23.13,113.26">广州</option><option value="22.54,114.06">深圳</option><option value="30.66,104.07">成都</option><option value="34.34,108.94">西安</option><option value="30.59,114.31">武汉</option><option value="45.8,126.53">哈尔滨</option><option value="43.83,87.62">乌鲁木齐</option><option value="29.65,91.14">拉萨</option><option value="20.04,110.32">海口</option><option value="custom">自定义（点击地球设置）</option></select></label>
-  <div id="siteInfo" style="font-size:11px;color:#8fa0ba;margin:3px 2px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">我的位置 · 29.3°N 117.2°E</div>
+    border-radius:6px;color:#e8ecf4;padding:3px 5px;font-size:12px;font-family:inherit;cursor:pointer;" title="选择观察地点：主图观测点与两个浮动窗口的观察者纬度同步更新（默认取本机定位，失败回退北京）"><option value="geo">使用我的位置</option><option value="39.91,116.4" selected="selected">北京</option><option value="31.23,121.47">上海</option><option value="23.13,113.26">广州</option><option value="22.54,114.06">深圳</option><option value="30.66,104.07">成都</option><option value="34.34,108.94">西安</option><option value="30.59,114.31">武汉</option><option value="45.8,126.53">哈尔滨</option><option value="43.83,87.62">乌鲁木齐</option><option value="29.65,91.14">拉萨</option><option value="20.04,110.32">海口</option><option value="custom">自定义（点击地球设置）</option></select></label>
+  <div id="siteInfo" style="font-size:11px;color:#8fa0ba;margin:3px 2px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">北京 · 39.9°N 116.4°E</div>
   <div class="row">
     <button id="btnPlay">地球自转</button>
     <label class="spd">速度<input id="speed" type="range" min="0" max="4" step="0.1" value="1"></label>
   </div>
-  <div class="grid8" id="phaseBtns"><button data-deg="0">新月</button><button data-deg="45">娥眉月</button><button data-deg="90">上弦月</button><button data-deg="135">盈凸月</button><button data-deg="180">满月</button><button data-deg="225">亏凸月</button><button data-deg="270">下弦月</button><button data-deg="315">残月</button></div>
+  <div class="grid8" id="phaseBtns"><button data-deg="0" class="">新月</button><button data-deg="45" class="">娥眉月</button><button data-deg="90" class="">上弦月</button><button data-deg="135" class="">盈凸月</button><button data-deg="180" class="">满月</button><button data-deg="225" class="">亏凸月</button><button data-deg="270" class="">下弦月</button><button data-deg="315" class="on">残月</button></div>
   <div class="views">
     <button data-view="oblique" class="on">斜视</button>
     <button data-view="top">俯视</button>
@@ -146,8 +146,8 @@
     <button id="btnEcl" style="flex:1;">新月落交点</button>
   </div>
   <div style="font-size:12px;color:#9fb0c8;line-height:1.6;margin:2px 2px 4px;">
-    <div id="inclTxt">黄白交角 5.292°（均值 5.145°）</div>
-    <div id="nodeTxt">升交点黄经 326.9° · 月球黄纬 -3.98°</div>
+    <div id="inclTxt">黄白交角 5.293°（均值 5.145°）</div>
+    <div id="nodeTxt">升交点黄经 325.8° · 月球黄纬 -2.83°</div>
     <div id="eclTxt" style="color:#ffd98a;">（朔/望时按 |β| 判断是否可能发生食）</div>
   </div>
   <div class="row" id="revRow" style="margin:5px 0 2px;">
@@ -179,17 +179,17 @@
     <div id="demoRow"><button id="btnDemo" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停">播放（演示）</button></div>
   </div>
 </div>
-<div id="horWin" style="display: none; right: 14px; top: 14px;">
+<div id="horWin" style="display:none;">
   <div class="lwHead">
     <span class="lwTitle">地平面 · 月球升落<small>一个太阴日</small></span>
     <span class="lwBtn" id="btnHorMax" title="放大 / 还原">⤢</span>
     <span class="lwBtn" id="btnHorClose" title="隐藏窗口">✕</span>
   </div>
   <div id="horBody">
-    <div id="whenWhere" style="font-size:10.5px;line-height:1.2;color:#9fb0c8;margin:0 0 1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2026-10-17 · 我的位置 · 29.3°N 117.2°E</div>
+    <div id="whenWhere" style="font-size:10.5px;line-height:1.2;color:#9fb0c8;margin:0 0 1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2026-11-10 · 北京 · 39.9°N 116.4°E</div>
     <canvas id="horCv"></canvas>
     <label class="spd" style="margin-top:4px;">当前月相<input id="rgPhase" type="range" min="0" max="360" step="1" value="0" title="拖动演示当前月相（新月→上弦→满月→下弦→新月）"><span id="phaseVal">新月</span></label>
-    <label class="spd" style="margin-top:3px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="30"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">30°N</span></label>
+    <label class="spd" style="margin-top:3px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="40"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">40°N</span></label>
     <table id="riseTbl">
       <tbody><tr><th style="text-align:left;padding-left:8px;">事件</th><th>时间（距现在）</th><th>方位</th></tr>
       <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">—</td><td id="aRise">—</td></tr>
@@ -1422,9 +1422,28 @@ for(const ph of PHASE8){
   const b=document.createElement('button');
   b.textContent=ph.name;b.dataset.deg=ph.deg;
   b.onclick=()=>{
-    const target=thetaForPhase(ph.deg);            // 反解出使 δ=ph.deg 的轨道角 θ
-    const delta=((target-S.theta)%(2*Math.PI)+3*Math.PI)%(2*Math.PI)-Math.PI;
-    S.anim={from:S.theta,to:S.theta+delta,t0:perfNow(),dur:900,stopAfter:true};
+    /* R36：点月相键 ⇒ 日期跳到"本月（当前日期所在的朔望月）内"该相位实际发生的那一天，
+       日期控件/月龄/两个浮动窗/whenWhere 随之同步（全页仍统一时间）。
+       规则：目标月龄 ≥ 当前月龄 ⇒ 本月内尚未来到，取 朔日+目标月龄（可在半月之外，仍属本月）；
+             目标月龄 < 当前月龄 ⇒ 本月该相位已过，取时间上最近的朔望月（就近 ±半月）。 */
+    const deg0=phaseDelta(S.theta)*R2D;                    // 当前相位角
+    const SYNODIC=29.530588;
+    const now=(S.dateAnchor||new Date()).getTime();
+    const age0=phaseInfo(S.theta).age;                     // 当前月龄（天）
+    const ageT=ph.deg/360*SYNODIC;                         // 目标相位的月龄
+    const nm0=now-age0*864e5;                              // 本月朔日（近似）
+    let t=(ageT>=age0)?nm0+ageT*864e5
+         :now+(((ph.deg-deg0+540)%360)-180)/360*SYNODIC*864e5;
+    const refine=tt=>{                                     // 星历实际相位角一次精化（吸收出差项）
+      const e=ephOf((tt-J2000_MS)/864e5);
+      const act=((e.lamM-e.lamS)%360+360)%360;
+      return tt-(((act-ph.deg+540)%360)-180)/360*SYNODIC*864e5;
+    };
+    t=refine(refine(t));
+    const oldTheta=S.theta;
+    applyDate(new Date(t));                                // φ/θ/Ω/日期/月龄全套星历切换（含日期控件）
+    const delta=((S.theta-oldTheta)%(2*Math.PI)+3*Math.PI)%(2*Math.PI)-Math.PI;
+    S.anim={from:oldTheta,to:oldTheta+delta,t0:perfNow(),dur:900,stopAfter:true};
     S.playing=true;syncPlayBtns();                 // 仅在 900ms 滑动到目标相位期间播放
     S.revolve=false;ckRev.checked=false;           // 点击月相按键 ⇒ 地球公转停止（相位保持）
     S.holdPhase=true;                              // 动画结束后：公转停、自转不停
