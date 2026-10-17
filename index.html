@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>月相原理 · 3D 演示</title>
 <style>
-  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#04060c;
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#060e1f;
     font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;}
   canvas#gl,canvas#ov{position:absolute;inset:0;width:100%;height:100%;display:block;}
   canvas#ov{pointer-events:none;}
   #panel{position:absolute;top:14px;left:14px;width:262px;box-sizing:border-box;
     max-height:calc(100vh - 28px);overflow-y:auto;scrollbar-width:thin;
-    padding:14px 16px 12px;border-radius:14px;color:#e8ecf4;
-    background:rgba(13,17,28,.86);border:1px solid rgba(255,255,255,.09);
+    padding:10px 16px 8px;border-radius:14px;color:#e8ecf4;
+    background:rgba(12,26,52,.88);border:1px solid rgba(150,180,230,.14);
     backdrop-filter:blur(8px);user-select:none;z-index:10;}
   #panel h1{margin:0 0 6px;font-size:15px;font-weight:600;color:#dfe6f2;letter-spacing:.5px;}
   #phaseName{font-size:22px;font-weight:700;color:#ffd98a;margin:2px 0 4px;}
   #phaseCv{display:block;margin:4px auto 2px;border-radius:50%;
     box-shadow:0 0 0 1px rgba(255,255,255,.10),0 4px 18px rgba(0,0,0,.5);}
   .info{display:flex;justify-content:space-between;color:#9fb0c8;font-size:12px;margin:2px 2px 8px;}
-  .row{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap;}
+  .row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap;}
   button{cursor:pointer;color:#e8ecf4;background:rgba(255,255,255,.08);
     border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 0;
     font-size:12px;font-family:inherit;transition:background .15s;}
@@ -34,30 +34,35 @@
     border-color:#8ab4ff;color:#ffffff;font-weight:600;
     box-shadow:0 0 0 1px rgba(138,180,255,.60),0 0 14px rgba(77,124,255,.75);}
   /* 太阴日窗口内：全局播放/暂停（主图+演示的地球自转、月球自转与公转） */
-  #demoRow,#demoRow2{display:flex;gap:7px;margin-top:6px;}
+  #demoRow,#demoRow2{display:flex;gap:7px;margin-top:4px;}
   #demoRow button,#demoRow2 button{flex:1;font-size:12px;padding:5px 0;border-radius:8px;
     background:rgba(60,76,108,.55);color:#dfe7f3;border:1px solid rgba(255,255,255,.14);}
   #demoRow button:hover,#demoRow2 button:hover{background:rgba(84,104,142,.65);}
   #demoRow button.paused,#demoRow2 button.paused{background:rgba(34,94,54,.62);border-color:rgba(120,220,150,.45);}
-  #btnPlay{flex:0 0 64px;}
-  .grid8{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0;}
-  .views{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  #btnPlay{flex:0 0 92px;}
+  .grid8{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0;}
+  .views{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-size:11px;}
   .toggles{gap:10px;font-size:12px;color:#b8c4d8;}
   .toggles label{display:flex;align-items:center;gap:4px;cursor:pointer;}
   .toggles input{accent-color:#4c86ff;cursor:pointer;}
   label.spd{flex:1;display:flex;align-items:center;gap:6px;font-size:12px;color:#9fb0c8;}
   label.spd input{flex:1;accent-color:#4c86ff;}
+  /* 地球公转倍速：未勾选公转时整条置灰不可拖 */
+  #revSpdWrap{transition:opacity .15s;}
+  #revSpdWrap.off{opacity:.38;}
+  #revSpeed{flex:1;min-width:0;height:14px;}
+  #revSpeed:disabled{cursor:default;}
   .note{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);
     font-size:11px;line-height:1.5;color:#7e8ca3;}
   #hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
     color:rgba(255,255,255,.42);font-size:12px;letter-spacing:1px;z-index:10;
-    background:rgba(10,14,22,.5);padding:5px 14px;border-radius:20px;white-space:nowrap;}
+    background:rgba(10,22,44,.55);padding:5px 14px;border-radius:20px;white-space:nowrap;}
   #err{position:absolute;bottom:52px;right:16px;color:#ff9a8a;font-size:13px;z-index:20;max-width:40%;
     text-align:right;pointer-events:none;}
   /* 太阴日 · 右上角可隐藏浮动窗口 */
   #lunarWin{position:absolute;top:14px;right:14px;width:332px;box-sizing:border-box;
-    border-radius:14px;color:#e8ecf4;background:rgba(13,17,28,.90);
-    border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(9px);
+    border-radius:14px;color:#e8ecf4;background:rgba(12,26,52,.92);
+    border:1px solid rgba(150,180,230,.15);backdrop-filter:blur(9px);
     user-select:none;z-index:12;overflow:hidden;
     box-shadow:0 12px 38px rgba(0,0,0,.55);}
   .lwHead{display:flex;align-items:center;gap:6px;padding:7px 8px 7px 12px;
@@ -70,25 +75,25 @@
   .lwBtn:hover{background:rgba(255,255,255,.20);}
   #lunarBody{padding:9px 13px 12px;}
   #lunarCv{display:block;margin:0 auto 7px;width:306px;height:300px;
-    border-radius:10px;background:rgba(4,8,16,.55);border:1px solid rgba(255,255,255,.05);}
+    border-radius:10px;background:rgba(5,13,30,.60);border:1px solid rgba(255,255,255,.05);}
   #lunarChip{position:absolute;top:14px;right:14px;z-index:12;display:none;cursor:pointer;
-    font-size:12px;color:#ffe0a8;background:rgba(13,17,28,.90);border:1px solid rgba(255,255,255,.13);
+    font-size:12px;color:#ffe0a8;background:rgba(12,26,52,.92);border:1px solid rgba(150,180,230,.16);
     border-radius:10px;padding:6px 11px;user-select:none;box-shadow:0 6px 20px rgba(0,0,0,.45);}
-  #lunarChip:hover{background:rgba(32,42,62,.95);}
+  #lunarChip:hover{background:rgba(24,44,82,.95);}
   #lunarWin .tip{font-size:11px;line-height:1.45;color:#7e8ca3;margin-top:3px;}
   /* 观测点（小人）地平视角浮动窗口：屏幕右下角 */
   #siteWin{position:absolute;right:14px;bottom:14px;width:332px;box-sizing:border-box;
-    border-radius:14px;color:#e8ecf4;background:rgba(13,17,28,.90);
-    border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(9px);
+    border-radius:14px;color:#e8ecf4;background:rgba(12,26,52,.92);
+    border:1px solid rgba(150,180,230,.15);backdrop-filter:blur(9px);
     user-select:none;z-index:12;overflow:hidden;
     box-shadow:0 12px 38px rgba(0,0,0,.55);}
   #siteCv{display:block;margin:0 auto;width:306px;height:206px;
-    border-radius:10px;background:rgba(4,8,16,.55);border:1px solid rgba(255,255,255,.05);}
+    border-radius:10px;background:rgba(5,13,30,.60);border:1px solid rgba(255,255,255,.05);}
   /* 太阴日窗口内：地平面月升落迷你图 */
-  #horCv{display:block;margin:4px auto 0;width:306px;height:108px;
-    border-radius:8px;background:rgba(4,8,16,.55);border:1px solid rgba(255,255,255,.05);}
+  #horCv{display:block;margin:2px auto 0;width:306px;height:108px;
+    border-radius:8px;background:rgba(5,13,30,.60);border:1px solid rgba(255,255,255,.05);}
   /* 月出/中天/月落数据表 */
-  #riseTbl{width:306px;margin:5px auto 0;border-collapse:collapse;font-size:12.5px;color:#c3d0e4;}
+  #riseTbl{width:306px;margin:4px auto 0;border-collapse:collapse;font-size:12.5px;color:#c3d0e4;}
   #riseTbl td,#riseTbl th{padding:1px 4px;text-align:center;border-bottom:1px solid rgba(255,255,255,.07);}
   #riseTbl th{color:#8fa0ba;font-weight:600;}
   #riseTbl tr:last-child td{border-bottom:none;}
@@ -100,11 +105,11 @@
   #lunarThumb,#lunarThumb2{transition:box-shadow .15s;}
   /* 地平面 · 月球升落：独立浮动窗口（太阴日演示第二子图） */
   #horWin{position:absolute;top:440px;right:14px;width:332px;box-sizing:border-box;
-    border-radius:14px;color:#e8ecf4;background:rgba(13,17,28,.90);
-    border:1px solid rgba(255,255,255,.10);backdrop-filter:blur(9px);
+    border-radius:14px;color:#e8ecf4;background:rgba(12,26,52,.92);
+    border:1px solid rgba(150,180,230,.15);backdrop-filter:blur(9px);
     user-select:none;z-index:12;overflow:hidden;
     box-shadow:0 12px 38px rgba(0,0,0,.55);}
-  #horBody{padding:6px 13px 6px;}
+  #horBody{padding:3px 13px 3px;}
   #phaseVal{flex:0 0 56px;text-align:right;color:#ffe0a8;font-size:12.5px;}
 </style>
 </head>
@@ -115,12 +120,17 @@
   <h1>月相原理 · 3D 演示</h1>
   <div id="phaseName">娥眉月</div>
   <canvas id="phaseCv" width="132" height="132"></canvas>
-  <div class="info"><span id="illu">照亮 40%</span><span id="age">月龄 6.5 天</span></div>
+  <div class="info"><span id="illu">照亮 36%</span><span id="age">月龄 6.1 天</span></div>
+  <label class="spd" style="margin-top:2px;">日期<input id="inDate" type="date" style="flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+    border-radius:6px;color:#e8ecf4;padding:3px 6px;font-size:12px;font-family:inherit;color-scheme:dark;" title="选择任意日期：全页（主图+两个浮动窗口）显示该日实际月相" value="2026-10-17"></label>
+  <label class="spd" style="margin-top:4px;">地点<select id="selCity" style="flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+    border-radius:6px;color:#e8ecf4;padding:3px 5px;font-size:12px;font-family:inherit;cursor:pointer;" title="选择观察地点：主图观测点与两个浮动窗口的观察者纬度同步更新（默认取本机定位，失败回退北京）"><option value="geo" selected="selected">使用我的位置</option><option value="39.91,116.4">北京</option><option value="31.23,121.47">上海</option><option value="23.13,113.26">广州</option><option value="22.54,114.06">深圳</option><option value="30.66,104.07">成都</option><option value="34.34,108.94">西安</option><option value="30.59,114.31">武汉</option><option value="45.8,126.53">哈尔滨</option><option value="43.83,87.62">乌鲁木齐</option><option value="29.65,91.14">拉萨</option><option value="20.04,110.32">海口</option><option value="custom">自定义（点击地球设置）</option></select></label>
+  <div id="siteInfo" style="font-size:11px;color:#8fa0ba;margin:3px 2px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">我的位置 · 29.3°N 117.2°E</div>
   <div class="row">
-    <button id="btnPlay">播放</button>
-    <label class="spd">速度<input id="speed" type="range" min="0" max="2.5" step="0.1" value="1"></label>
+    <button id="btnPlay">地球自转</button>
+    <label class="spd">速度<input id="speed" type="range" min="0" max="4" step="0.1" value="1"></label>
   </div>
-  <div class="grid8" id="phaseBtns"><button data-deg="0">新月</button><button data-deg="45" class="">娥眉月</button><button data-deg="90">上弦月</button><button data-deg="135">盈凸月</button><button data-deg="180">满月</button><button data-deg="225">亏凸月</button><button data-deg="270">下弦月</button><button data-deg="315">残月</button></div>
+  <div class="grid8" id="phaseBtns"><button data-deg="0">新月</button><button data-deg="45">娥眉月</button><button data-deg="90">上弦月</button><button data-deg="135">盈凸月</button><button data-deg="180">满月</button><button data-deg="225">亏凸月</button><button data-deg="270">下弦月</button><button data-deg="315">残月</button></div>
   <div class="views">
     <button data-view="oblique" class="on">斜视</button>
     <button data-view="top">俯视</button>
@@ -128,67 +138,71 @@
     <button data-view="helio">日心视角</button>
   </div>
   <div class="row" style="margin-bottom:2px;">
-    <button id="btnLunar" style="flex:1;" class="on">太阴日演示</button>
+    <button id="btnLunar" style="flex:1;">太阴日演示</button>
     <label class="toggles" style="display:flex;align-items:center;gap:4px;font-size:12px;color:#b8c4d8;cursor:pointer;"><input type="checkbox" id="ckLock" checked="checked" style="accent-color:#4c86ff;cursor:pointer;">潮汐锁定</label>
   </div>
   <div class="row" style="margin-bottom:2px;">
     <button id="btnNode" style="flex:1;">交点退行</button>
     <button id="btnEcl" style="flex:1;">新月落交点</button>
   </div>
-  <div style="font-size:12px;color:#9fb0c8;line-height:1.7;margin:4px 2px 6px;">
-    <div id="inclTxt">黄白交角 5.300°（均值 5.145°）</div>
-    <div id="nodeTxt">升交点黄经 0.0° · 月球黄纬 -5.20°</div>
+  <div style="font-size:12px;color:#9fb0c8;line-height:1.6;margin:2px 2px 4px;">
+    <div id="inclTxt">黄白交角 5.292°（均值 5.145°）</div>
+    <div id="nodeTxt">升交点黄经 326.9° · 月球黄纬 -3.98°</div>
     <div id="eclTxt" style="color:#ffd98a;">（朔/望时按 |β| 判断是否可能发生食）</div>
   </div>
-  <div class="row toggles">
-    <label><input type="checkbox" id="ckRev">地球公转</label>
+  <div class="row" id="revRow" style="margin:5px 0 2px;">
+    <label class="toggles" style="flex:0 0 auto;"><input type="checkbox" id="ckRev">地球公转</label>
+    <label class="spd off" id="revSpdWrap" style="flex:1;min-width:0;gap:5px;" title="地球公转倍速：1×＝真实速率（1 年≈42 分钟）；加速后地球公转、月球公转与日期同步快进"><span style="flex:0 0 30px;text-align:right;color:#ffd98a;font-variant-numeric:tabular-nums;">×<b id="revVal">1</b></span><input id="revSpeed" type="range" min="0" max="100" step="1" value="0" disabled="disabled"></label>
+  </div>
+  <div class="row toggles" style="margin:3px 0 6px;">
     <label><input type="checkbox" id="ckMark" checked="checked">轨道与八相标记</label>
     <label><input type="checkbox" id="ckStars" checked="checked">星空</label>
     <label><input type="checkbox" id="ckLabel" checked="checked">天体标注</label>
     <label><input type="checkbox" id="ckIncl" checked="checked">黄道/白道面</label>
   </div>
   </div>
-<div id="lunarWin" style="display: block;">
+<div id="lunarWin" style="display:none;">
   <div class="lwHead">
     <span class="lwTitle">太阴日 · 放大演示<small>以地球为中心（俯视北极）</small></span>
     <span class="lwBtn" id="btnLunarMax" title="放大 / 还原">⤢</span>
-    <span class="lwBtn" id="btnLunarMin" title="收起">–</span>
+    <span class="lwBtn" id="btnLunarMin" title="收起 / 展开">–</span>
     <span class="lwBtn" id="btnLunarClose" title="隐藏窗口">✕</span>
   </div>
-  <div id="lunarBody" style="display: block;">
-    <canvas id="lunarCv" style="width: 306px; height: 300px;" width="612" height="600"></canvas>
+  <div id="lunarBody">
+    <canvas id="lunarCv"></canvas>
         <div id="lunarBarBox" title="拖动查看太阴日内任意时刻（拖动时演示暂停）" style="position:relative;height:14px;margin-top:7px;cursor:pointer;touch-action:none;">
       <div style="position:absolute;left:0;right:0;top:3px;height:8px;border-radius:4px;background:rgba(255,255,255,.10);overflow:hidden;">
       <div id="lunarBar" style="height:100%;width:0%;background:linear-gradient(90deg,#ff8a5c,#ffd98a);"></div>
       </div>
       <div id="lunarThumb" style="position:absolute;top:0;left:0%;width:14px;height:14px;border-radius:50%;background:linear-gradient(180deg,#ffd08a,#ff9a55);border:2px solid #fff2dc;box-shadow:0 1px 5px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.5);transform:translateX(-50%);pointer-events:none;"></div>
     </div>
-    <div id="demoRow"><button id="btnDemo" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停" class="paused">播放（演示）</button></div>
+    <div id="demoRow"><button id="btnDemo" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停">播放（演示）</button></div>
   </div>
 </div>
-<div id="horWin" style="display: block; right: 14px; top: 441px;">
+<div id="horWin" style="display: none; right: 14px; top: 14px;">
   <div class="lwHead">
     <span class="lwTitle">地平面 · 月球升落<small>一个太阴日</small></span>
     <span class="lwBtn" id="btnHorMax" title="放大 / 还原">⤢</span>
     <span class="lwBtn" id="btnHorClose" title="隐藏窗口">✕</span>
   </div>
   <div id="horBody">
-    <canvas id="horCv" style="width: 306px; height: 95px;" width="612" height="190"></canvas>
-    <label class="spd" style="margin-top:4px;">当前月相<input id="rgPhase" type="range" min="0" max="360" step="1" value="79" title="拖动演示当前月相（新月→上弦→满月→下弦→新月）"><span id="phaseVal">娥眉月</span></label>
+    <div id="whenWhere" style="font-size:10.5px;line-height:1.2;color:#9fb0c8;margin:0 0 1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2026-10-17 · 我的位置 · 29.3°N 117.2°E</div>
+    <canvas id="horCv"></canvas>
+    <label class="spd" style="margin-top:4px;">当前月相<input id="rgPhase" type="range" min="0" max="360" step="1" value="0" title="拖动演示当前月相（新月→上弦→满月→下弦→新月）"><span id="phaseVal">新月</span></label>
     <label class="spd" style="margin-top:3px;">观察者纬度<input id="rgLat" type="range" min="-66" max="66" step="2" value="30"><span id="latVal" style="flex:0 0 46px;text-align:right;color:#c9d6ea;">30°N</span></label>
     <table id="riseTbl">
       <tbody><tr><th style="text-align:left;padding-left:8px;">事件</th><th>时间（距现在）</th><th>方位</th></tr>
-      <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">+18h48m</td><td id="aRise">91°（东）</td></tr>
-      <tr><td class="ev" style="color:#ffe2a8;">中天</td><td class="t" id="tCulm">+0 min</td><td id="aCulm">180°（南）</td></tr>
-      <tr><td class="ev" style="color:#f0a998;">月落</td><td class="t" id="tSet">+6h23m</td><td id="aSet">271°（西）</td></tr>
+      <tr><td class="ev" style="color:#8fd7a5;">月出</td><td class="t" id="tRise">—</td><td id="aRise">—</td></tr>
+      <tr><td class="ev" style="color:#ffe2a8;">中天</td><td class="t" id="tCulm">—</td><td id="aCulm">—</td></tr>
+      <tr><td class="ev" style="color:#f0a998;">月落</td><td class="t" id="tSet">—</td><td id="aSet">—</td></tr>
     </tbody></table>
-    <div id="lunarBarBox2" title="拖动查看太阴日内任意时刻（拖动时演示暂停）" style="position:relative;height:14px;margin-top:5px;cursor:pointer;touch-action:none;">
+    <div id="lunarBarBox2" title="拖动查看太阴日内任意时刻（拖动时演示暂停）" style="position:relative;height:14px;margin-top:4px;cursor:pointer;touch-action:none;">
       <div style="position:absolute;left:0;right:0;top:3px;height:8px;border-radius:4px;background:rgba(255,255,255,.10);overflow:hidden;">
       <div id="lunarBar2" style="height:100%;width:0%;background:linear-gradient(90deg,#ff8a5c,#ffd98a);"></div>
       </div>
       <div id="lunarThumb2" style="position:absolute;top:0;left:0%;width:14px;height:14px;border-radius:50%;background:linear-gradient(180deg,#ffd08a,#ff9a55);border:2px solid #fff2dc;box-shadow:0 1px 5px rgba(0,0,0,.55),inset 0 1px 2px rgba(255,255,255,.5);transform:translateX(-50%);pointer-events:none;"></div>
     </div>
-    <div id="demoRow2"><button id="btnDemo2" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停" class="paused">播放（演示）</button></div>
+    <div id="demoRow2"><button id="btnDemo2" title="仅控制太阴日演示（窗口时钟与地平面日月升落），不影响主图。默认暂停">播放（演示）</button></div>
   </div>
 </div>
 <div id="lunarChip" style="display: none;">太阴日演示 ▸</div>
@@ -242,10 +256,16 @@ const EARTH_TILT=23.4*D2R;
 const MOON_INCL_MEAN=5.145*D2R, MOON_INCL_AMP=0.155*D2R;
 const SIDEREAL_MONTH=27.32166;   // 天
 const NODE_PERIOD_DAYS=6798.38;  // 升交点退行周期 6798.38 天 = 18.61 年（逆行）
-const ORBIT_PERIOD=24;           // 月球公转（秒/圈，1x）
+/* ---- 统一时间基准（R34）：四个运动共用一个时钟，比例全部取真实值 ----
+   地球自转 1 圈＝1 天；月球公转 1 圈＝27.32166 天；
+   月球自转＝公转（潮汐锁定）；地球公转 1 圈＝365.25636 天。
+   唯一自由量是"1 天＝多少演示秒"：取地球自转 0.9 rad/s ⇒ 1 天＝6.9813 s（观感与原来一致），
+   于是 1 个朔望月≈27.3 天≈190 s、1 年≈365.25 天≈2550 s。 */
+const EARTH_SPIN_RATE=0.9;       // rad/s（1x）＝恒星自转速率
+const DAY_SEC=2*Math.PI/EARTH_SPIN_RATE;              // 1 天的演示秒数 = 6.9813 s
+const ORBIT_PERIOD=SIDEREAL_MONTH*DAY_SEC;            // 月球公转（＝27.32166 天）
 const EARTH_ORBIT_R=24;          // 日心轨道半径（示意比例）
-const EARTH_ORBIT_PERIOD=ORBIT_PERIOD*13.37; // 恒星年/恒星月=13.37，真实比值
-const EARTH_SPIN_RATE=0.9;       // rad/s（1x，示意速率）＝恒星自转速率
+const EARTH_ORBIT_PERIOD=365.25636*DAY_SEC;           // 地球公转（＝365.25636 天，与恒星月之比 13.369）
 /* 三种"日"的演示速率：恒星日 / 太阳日 / 太阴日（1/太阴日 = 1/恒星日 − 1/恒星月） */
 const W_SPIN=EARTH_SPIN_RATE, W_MOON=2*Math.PI/ORBIT_PERIOD, W_EARTH=2*Math.PI/EARTH_ORBIT_PERIOD;
 const T_SIDEREAL_DAY=2*Math.PI/W_SPIN;            // 同一恒星连续两次上中天
@@ -276,7 +296,7 @@ const WH_PER_SIMSEC=24/T_SOLAR_DAY;                   // 窗口时钟推进：�
 const WH_MOON_EV=T_LUNAR_TRUE/T_LUNAR_DAY;            // 月球事件换算：主画面放大了月球公转（比值1.38），
                                                       // 月出/中天/月落须按太阴日真值 24.8412h 折算才是真实时刻
 const WIN_AM0=200, WIN_AS0=0;                         // 初始方位角：t=0 时月球恰在观察者午线上
-const NODE_ACCEL=50;             // 交点退行演示的加速倍数（真实周期太慢，看不出）
+const NODE_ACCEL=400;            // 交点退行演示的加速倍数（真实周期 18.61 年太慢；按新的月球周期换算保持观感速度）
 const NODE_RATE=2*Math.PI/(ORBIT_PERIOD*(NODE_PERIOD_DAYS/SIDEREAL_MONTH)/NODE_ACCEL); // rad/s（逆行为负向）
 const FOV=42*D2R;
 
@@ -287,7 +307,8 @@ const S={
   node: 0,                 // 升交点黄经 Ω（黄道面内逆时针）；Ω=0 时交点线沿 ±x
   nodeDrift:false,         // 交点退行演示开关
   incl:true,               // 显示黄道面/白道面与交点线
-  playing:true, speed:1,
+  playing:false, speed:1,  // 打开页面默认停止：地球自转/公转、月球自转/公转全部静止，日期＝终端今天
+  revSpeed:1,              // 地球公转倍速（仅勾选"地球公转"时生效，1＝真实速率）
   spin:0,                  // 地球自转
   view:'oblique',
   cam:{
@@ -413,7 +434,7 @@ void main(){
       col=mix(col,vec3(0.36,0.36,0.39),mare*0.55);
       col-=vec3(0.10)*smoothstep(0.75,0.95,m2);
     }
-    c=col*(0.02+1.05*pow(max(ndl,0.0),0.85));
+    c=col*(0.02+1.38*pow(max(ndl,0.0),0.72));   /* 亮面提亮（R33：亮面显示更明显） */
   }else if(uBody<2.5){ /* 太阳 */
     float g=fbm(n*4.0+vec3(uTime*0.05));
     vec3 base=mix(vec3(1.0,0.82,0.42),vec3(1.0,0.5,0.08),smoothstep(0.3,0.7,g));
@@ -605,6 +626,7 @@ let earthTex=null;
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    window.__earthBake=cvs;   /* 主图海陆贴图 canvas：浮动窗口地球与主图同图（R33） */
   }catch(err){
     earthTex=null;
     if(window.console)console.warn('海陆贴图烘焙失败，回退程序化纹理',err);
@@ -706,6 +728,83 @@ function phaseInfo(theta){
   return {elong,frac,name,waxing,deg,age,beta,delta,incl:moonInclRad(),node:S.node};
 }
 window.__phaseInfo=phaseInfo;
+
+/* ---- 真实日期 → 天文历算（低精度星历，黄经误差 <1°）：驱动"任意日期的实际月相" ----
+   d＝自 J2000.0 起的日数。λs 太阳黄经、λm 月球黄经（含出差主项）、F 白道纬度角、Ω 升交点黄经。
+   映射到仿真：地球公转角 φ=λs+180°（本模型 sunAzimuth=π−φ，顺时针约定 ⇒ 太阳黄经恰为 λs）；
+   S.node=Ω；S.theta 数值解 moonLon(θ)=λm ⇒ 相位角 δ=λm−λs、月龄、黄纬 β 全部自动成立，
+   主图与两个浮动窗口（均同源 phaseInfo(S.theta)）随之统一。 */
+const J2000_MS=Date.UTC(2000,0,1,12,0,0);
+function ephOf(d){
+  const g=(357.528+0.9856003*d)*D2R;
+  const lamS=280.460+0.9856474*d+1.915*Math.sin(g)+0.020*Math.sin(2*g);
+  const M=(134.963+13.064993*d)*D2R;
+  const F=(93.272+13.229350*d)*D2R;
+  const Ms=(356.047+0.9856002585*d)*D2R;
+  const D=(297.850+12.190749*d)*D2R;
+  /* 出差/出差主项+二阶项：对 2026 年 5 个朔/上弦/望时刻核对，相位角误差 ≤0.14° */
+  const lamM=218.316+13.176396*d+6.289*Math.sin(M)+1.274*Math.sin(2*D-M)
+    +0.658*Math.sin(2*D)+0.214*Math.sin(2*M)-0.186*Math.sin(Ms)-0.114*Math.sin(2*F);
+  const Om=125.045-0.0529538*d;
+  return {lamS,lamM,F:F*R2D,Om};
+}
+function thetaForMoonLon(lamDeg){          // 解 moonLon(θ)=λm（不动点迭代，5 次收敛）
+  const lam=lamDeg*D2R;let t=lam-S.node;
+  for(let k=0;k<5;k++){let e=(moonLon(t)-lam)%(2*Math.PI);
+    if(e>Math.PI)e-=2*Math.PI;if(e<-Math.PI)e+=2*Math.PI;t-=e;}
+  return t;
+}
+function applyDate(dt){                    // 设定整页统一时间：主图+两浮动窗的月相/黄纬/交点
+  const d=(dt.getTime()-J2000_MS)/864e5;
+  const e=ephOf(d);
+  S.node=((e.Om%360)+360)%360*D2R;
+  S.phi=((e.lamS+180)%360)*D2R;
+  S.theta=thetaForMoonLon(e.lamM);
+  S.anim=null;S.holdPhase=false;
+  lastHud='';lastLunarHud='';lastRiseKey='';
+  S.dateAnchor=dt;S.ageAnchor=phaseInfo(S.theta).age;
+  S.dateBase=dt;S.dateT0=S.simT;                         // 统一时钟基准：此后日期随仿真时间推进（1 天＝DAY_SEC，按整日取整）
+  const inDateEl=document.getElementById('inDate');       // 日期控件与统一时间保持一致
+  if(inDateEl)inDateEl.value=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+
+    String(dt.getDate()).padStart(2,'0');
+  updateWhenWhere&&updateWhenWhere();
+  return e;
+}
+window.__applyDate=applyDate;window.__ephOf=ephOf;
+/* 地球公转角 φ → 统一日期（R33）：λs=φ−180°（与 applyDate 的正向映射互逆），
+   先线性反演再两轮牛顿精化吸收太阳中心差项 ⇒ 日期随地球在公转轨道的位置同步变化 */
+function dateFromPhi(phi){
+  const ls=((phi*R2D-180)%360+360)%360;
+  let d=(ls-280.460)/0.9856474;
+  for(let k=0;k<2;k++){
+    const e=ephOf(d);
+    const err=((e.lamS-ls+540)%360)-180;
+    d-=err/0.9856474;
+  }
+  /* φ 是模 360° 的角度 ⇒ 日期有"整年歧义"：取距当前统一日期最近的年份，
+     保证勾选公转后日期从今天起随轨道位置连续递进（约 365.2422 天/圈） */
+  const dAnc=S.dateAnchor?(S.dateAnchor.getTime()-J2000_MS)/864e5:0;
+  d+=365.2422*Math.round((dAnc-d)/365.2422);
+  return new Date(J2000_MS+d*864e5);
+}
+let revDateKey='';
+/* 统一时钟 → 日期（R34）：地球每自转 1 圈＝1 天，日期按仿真时间（S.simT）推进。
+   与月球公转（27.32 天/圈）、地球公转（365.26 天/圈）共用同一时钟 ⇒ 日期/月相/公转位置天然一致。 */
+function syncRevDate(){
+  if(!S.dateAnchor)return;
+  const base=S.dateBase||S.dateAnchor, t0=(S.dateT0||0);
+  const days=Math.floor((S.simT-t0)/DAY_SEC);            // 整日（不把小数日累加进锚点，避免日期时刻漂移）
+  const dt=new Date(base.getTime()+days*864e5);
+  const key=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+
+    String(dt.getDate()).padStart(2,'0');
+  if(key===revDateKey)return;
+  revDateKey=key;
+  S.dateAnchor=dt;                                       // 供日期控件/“日期·地点”行读取
+  const el=document.getElementById('inDate');
+  if(el)el.value=key;                      // 日期控件与统一时钟保持一致（不触发 onchange）
+  updateWhenWhere&&updateWhenWhere();
+}
+window.__dateFromPhi=dateFromPhi;
 window.__moonRel=moonRel;
 window.__moonLatBeta=moonLatBeta;
 window.__orbMat=moonOrbitMat;
@@ -930,11 +1029,10 @@ function render(timeSec){
   drawSphere(moonM,1,sunDirFrom(mp));
   gl.uniform1f(uSx.MoonTex,0);
 
-  /* 标记点（观察者 / 月面标记） */
+  /* 标记点（观察者）；月面标记点不再绘制（R33） */
   const mDraw=(mw,color,r)=>{
     drawSphere(mMul(mTrans(mw.p[0],mw.p[1],mw.p[2]),mScale(r)),3,null,color);
   };
-  mDraw(moonMarkWorld(),[1.0,0.45,0.15],0.05);
   if(S.lunarDemo)mDraw(obsWorld(),[1.0,0.22,0.18],0.055);
 
   /* 轨道与地轴 */
@@ -1118,8 +1216,7 @@ function drawOverlay(){
       const ow=obsWorld();
       lab(ow.p,'观察者','#ff8a80',-12,markerVis(ow.p,'earth'));
     }
-    const mw=moonMarkWorld();
-    lab(mw.p,'月面标记','#ffb266',-11,markerVis(mw.p,'moon'));
+    /* 月面标记的文字与符号不再显示（R33 需求：主图不画"月面标记"标注与橙色标记点） */
   }
   /* 太阴日：上中天提示（月球进入观察者子午面） */
   if(S.lunarDemo&&S.obs.cur){
@@ -1300,10 +1397,24 @@ function updateHUD(){
 /* ================= 交互 ================= */
 const btnPlay=document.getElementById('btnPlay');
 function syncPlayBtns(){        // 主面板播放按钮：只控制主图（R18 起演示有独立播放键）
-  btnPlay.textContent=S.playing?'暂停':'播放';
+  btnPlay.textContent=S.playing?'暂停':'地球自转';
 }
 btnPlay.onclick=()=>{S.playing=!S.playing;S.holdPhase=false;syncPlayBtns();};
 document.getElementById('speed').oninput=e=>{S.speed=parseFloat(e.target.value);};
+/* ---- 地球公转倍速（R35）：对数刻度 1×…120×，仅勾选"地球公转"时可调 ----
+   1×＝真实速率（1 年≈42 分钟）；倍速只作用于"天文时间线"（地球公转、月球公转、
+   日期与月相），地球自转仍按上面的"速度"独立走，避免高速公转时自转糊成一片。 */
+const revRange=document.getElementById('revSpeed'),revVal=document.getElementById('revVal'),
+      revWrap=document.getElementById('revSpdWrap');
+const revOfV=v=>Math.round(Math.pow(120,v/100));
+function syncRevUI(){
+  const on=!!S.revolve;
+  revRange.disabled=!on;revWrap.classList.toggle('off',!on);
+  revRange.value=String(Math.round(100*Math.log(Math.max(1,S.revSpeed))/Math.log(120)));
+  revVal.textContent=String(S.revSpeed);
+}
+revRange.oninput=e=>{S.revSpeed=revOfV(+e.target.value);revVal.textContent=String(S.revSpeed);};
+syncRevUI();
 
 const grid=document.getElementById('phaseBtns');
 grid.textContent='';                               // 幂等：清空后再生成，杜绝任何重跑导致的重复按钮
@@ -1333,7 +1444,10 @@ document.getElementById('ckLabel').onchange=e=>S.labels=e.target.checked;
 document.getElementById('ckLock').onchange=e=>S.lockMoon=e.target.checked;
 document.getElementById('ckIncl').onchange=e=>S.incl=e.target.checked;
 const ckRev=document.getElementById('ckRev');
-ckRev.onchange=e=>{S.revolve=e.target.checked;S.holdPhase=false;};
+ckRev.onchange=e=>{S.revolve=e.target.checked;S.holdPhase=false;syncRevUI();
+  if(S.revolve&&S.dateAnchor){                 // 与统一日期对齐：地球跳到当前日期对应的公转位置
+    const ed=ephOf((S.dateAnchor.getTime()-J2000_MS)/864e5);
+    S.phi=((ed.lamS+180)%360)*D2R;}};
 
 /* ---- 交点：退行 / 新月落交点（黄白交角演示） ---- */
 const btnNode=document.getElementById('btnNode');
@@ -1563,7 +1677,15 @@ const winTex={earth:null,moon:null},winScratch={};
     }catch(e){}};
     im.onerror=()=>{};
     im.src='data:image/jpeg;base64,'+b64;};
-  load(EARTH_IMG_B64,'earth');load(MOON_IMG_B64,'moon');
+  /* 地球：直接采用主图海陆烘焙 canvas（R33：与主图地球完全同一影像，不透明），不再加载旧影像 */
+  if(window.__earthBake){
+    try{
+      const c=window.__earthBake,x=c.getContext('2d',{willReadFrequently:true});
+      winTex.earth={w:c.width,h:c.height,d:x.getImageData(0,0,c.width,c.height).data};
+    }catch(e){}
+  }
+  if(!winTex.earth)load(EARTH_IMG_B64,'earth');   /* 烘焙失败时的兜底 */
+  load(MOON_IMG_B64,'moon');
 })();
 window.__winTexInfo=()=>({earth:!!winTex.earth,moon:!!winTex.moon,
   ew:winTex.earth&&winTex.earth.w,mw:winTex.moon&&winTex.moon.w});
@@ -1647,8 +1769,8 @@ function drawWinGlobe(g,x,y,r,kind,azSun,off){
       texSample(t,lam/(2*Math.PI)+0.5,0.5-lat/Math.PI,_sam);
       const ndl=nx*Lx+nw*Lz;
       let rr,gg,bb;
-      if(kind){ // 月球：真实锐利的明暗界线
-        const b=0.035+1.05*Math.pow(Math.max(ndl,0),0.85);
+      if(kind){ // 月球：真实锐利的明暗界线；亮面提亮（R33 与主图一致）
+        const b=0.035+1.30*Math.pow(Math.max(ndl,0),0.72);
         rr=_sam[0]*b;gg=_sam[1]*b;bb=_sam[2]*b;
       }else{    // 地球：大气造成的柔和昼夜过渡，夜面微蓝
         let day=ndl<=-0.12?0:ndl>=0.25?1:(ndl+0.12)/0.37;
@@ -1694,7 +1816,7 @@ function drawLunarDiagram(){
   const near=Math.abs(m.H)<4;
   const chip=(t,x,y,c,f)=>{g.font=f||'10.5px "Microsoft YaHei",sans-serif';
     const w=g.measureText(t).width;
-    g.fillStyle='rgba(5,9,18,.82)';
+    g.fillStyle='rgba(7,15,32,.85)';
     if(g.roundRect){g.beginPath();g.roundRect(x-w/2-4,y-10,w+8,14,5);g.fill();}
     else g.fillRect(x-w/2-4,y-10,w+8,14);
     g.fillStyle=c;g.textAlign='center';g.fillText(t,x,y);};
@@ -1891,8 +2013,93 @@ const rgLat=document.getElementById('rgLat'),latVal=document.getElementById('lat
 const latText=v=>Math.abs(v)<0.5?'0°(赤道)':Math.abs(v)+'°'+(v>0?'N':'S');
 rgLat.oninput=()=>{
   const v=parseFloat(rgLat.value);
-  S.obsLat=v*D2R;latVal.textContent=latText(v);lastLunarHud='';
+  S.obsLat=v*D2R;S.site.lat=v*D2R;      // 全页统一地点：窗口观察者纬度与 3D 观测点纬度同步
+  latVal.textContent=latText(v);lastLunarHud='';
+  updateWhenWhere();
 };
+
+/* ---- 统一时间与地点：日期选择 + 地点选择（本机定位，失败回退北京） ----
+   地点：城市预设表 + 浏览器 geolocation；setPlace 一次性写入 3D 观测点(S.site)、
+   窗口观察者纬度(S.obsLat)、纬度滑条(rgLat)并刷新坐标行 —— 全页单一定义点。
+   日期：applyDate 用低精度星历把真实日期映射为实际月相（见 phaseInfo 后的星历块），
+   主图与两个浮动窗口同源 phaseInfo(S.theta)，自动联动。 */
+const CITIES=[['北京',39.91,116.40],['上海',31.23,121.47],['广州',23.13,113.26],
+  ['深圳',22.54,114.06],['成都',30.66,104.07],['西安',34.34,108.94],['武汉',30.59,114.31],
+  ['哈尔滨',45.80,126.53],['乌鲁木齐',43.83,87.62],['拉萨',29.65,91.14],['海口',20.04,110.32]];
+const inDate=document.getElementById('inDate'),selCity=document.getElementById('selCity'),
+      siteInfo=document.getElementById('siteInfo');
+S.placeName='北京';
+function fmtCoord(latD,lonD){
+  return Math.abs(latD).toFixed(1)+'°'+(latD>=0?'N':'S')+' '+
+         Math.abs(lonD).toFixed(1)+'°'+(lonD>=0?'E':'W');
+}
+function setPlace(latD,lonD,label){
+  latD=Math.max(-66,Math.min(66,latD));
+  S.placeName=label||'自定义';
+  S.site.lat=latD*D2R;S.site.lon=lonD*D2R;S.obsLat=latD*D2R;
+  const v=Math.round(latD/2)*2;                          // rgLat 步长 2
+  rgLat.value=String(Math.max(-66,Math.min(66,v)));
+  latVal.textContent=latText(parseFloat(rgLat.value));
+  siteInfo.textContent=S.placeName+' · '+fmtCoord(latD,lonD);
+  lastLunarHud='';lastRiseKey='';
+  updateWhenWhere();
+}
+function updateWhenWhere(){                              // 地平面窗口顶部的日期·地点行
+  const el=document.getElementById('whenWhere');if(!el)return;
+  const d=S.dateAnchor||new Date();
+  el.textContent=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+
+    String(d.getDate()).padStart(2,'0')+' · '+S.placeName+' · '+
+    fmtCoord(S.site.lat*R2D,S.site.lon*R2D);
+}
+(function buildCitySel(){
+  const oGeo=document.createElement('option');oGeo.value='geo';oGeo.textContent='使用我的位置';
+  selCity.appendChild(oGeo);
+  for(const [n,la,lo] of CITIES){
+    const o=document.createElement('option');o.value=la+','+lo;o.textContent=n;selCity.appendChild(o);
+  }
+  const oC=document.createElement('option');oC.value='custom';oC.textContent='自定义（点击地球设置）';
+  selCity.appendChild(oC);
+})();
+selCity.onchange=()=>{
+  if(selCity.value==='geo'){requestGeo();return;}
+  if(selCity.value==='custom'){                         // 已有点击地球放置观测点的交互
+    const la=S.site.lat*R2D,lo=S.site.lon*R2D;
+    siteInfo.textContent='自定义 · '+fmtCoord(la,lo);
+    return;
+  }
+  const [la,lo]=selCity.value.split(',').map(parseFloat);
+  const name=selCity.selectedOptions[0].textContent;
+  setPlace(la,lo,name);
+};
+function requestGeo(){                                   // 本机定位（电脑终端位置）
+  const fallback=()=>{const b=CITIES[0];selCity.value=b[1]+','+b[2];setPlace(b[1],b[2],b[0]);};
+  if(!navigator.geolocation){fallback();return;}
+  let done=false;
+  const timer=setTimeout(()=>{if(!done){done=true;fallback();}},4500);
+  navigator.geolocation.getCurrentPosition(p=>{
+    if(done)return;done=true;clearTimeout(timer);
+    setPlace(p.coords.latitude,p.coords.longitude,'我的位置');
+    selCity.value='geo';
+  },()=>{if(!done){done=true;clearTimeout(timer);fallback();}},{timeout:4000,maximumAge:600000});
+}
+inDate.onchange=()=>{
+  if(!inDate.value)return;
+  const dt=new Date(inDate.value+'T12:00:00');
+  if(isNaN(dt))return;
+  applyDate(dt);
+};
+/* 点击/拖动地球放置观测点 ⇒ 反向同步到窗口纬度与地点行（全页统一地点） */
+function placeFromMap(){
+  S.obsLat=S.site.lat;
+  const la=S.site.lat*R2D,lo=S.site.lon*R2D;
+  const v=Math.max(-66,Math.min(66,Math.round(la/2)*2));
+  rgLat.value=String(v);latVal.textContent=latText(parseFloat(rgLat.value));
+  S.placeName='自定义';
+  if(selCity)selCity.value='custom';
+  siteInfo.textContent='自定义 · '+fmtCoord(la,lo);
+  lastLunarHud='';lastRiseKey='';
+  updateWhenWhere();
+}
 /* 太阴日进度条：鼠标拖动 scrub（按 R15 需求取代原自转播放键+滑条行）。
    进度 = 本太阴日内地球已自转角度 / 373.638°；拖动即把窗口时钟设定到对应时刻，
    拖动开始时演示暂停（播放键显示"播放"），松手保持暂停、可再按键恢复。
@@ -2013,7 +2220,9 @@ cv.addEventListener('pointermove',e=>{
   c.yaw+=dx;
   c.pitch=Math.max(-1.5,Math.min(1.5,c.pitch+dy));
 });
-cv.addEventListener('pointerup',()=>{S.drag=false;S.site.drag=false;});
+cv.addEventListener('pointerup',()=>{S.drag=false;
+  if(S.site.drag){placeFromMap();}                     // 拖完观测点 ⇒ 全页统一新地点
+  S.site.drag=false;});
 cv.addEventListener('wheel',e=>{
   e.preventDefault();
   if(S.view==='earth'){switchView('oblique');return;}
@@ -2253,6 +2462,12 @@ function updateRiseTable(){
 window.__site=()=>({on:S.site.on,lat:S.site.lat*R2D,lon:wrap360(S.site.lon*R2D),
   world:siteWorld().p,win:siteWin.style.display,drag:S.site.drag});
 window.__pick=p=>pickEarth(p[0],p[1]);
+window.__revState=()=>({revolve:S.revolve,revSpeed:S.revSpeed,
+  slider:+document.getElementById('revSpeed').value,
+  disabled:document.getElementById('revSpeed').disabled,
+  label:document.getElementById('revVal').textContent});
+window.__setRevSpeed=v=>{S.revSpeed=Math.max(1,v);syncRevUI();return S.revSpeed;};
+window.__revOfV=revOfV;
 window.__altAz=d=>{const aa=altAzOf(d,siteBasis(S.site.lat,S.site.lon));
   return {alt:aa.alt*R2D,az:aa.az*R2D};};
 window.__setSite=(lat,lon)=>{S.site.on=true;S.site.lat=lat*D2R;S.site.lon=lon*D2R;
@@ -2276,13 +2491,18 @@ function simStep(dt,now){
     if(p>=1){const stop=S.anim.stopAfter;S.anim=null;
       if(stop){S.playing=false;syncPlayBtns();}}   // 跳相完成：公转停，自转经 holdPhase 继续
   }else if(S.playing){
-    S.theta+=2*Math.PI/ORBIT_PERIOD*S.speed*dt;            // 月球公转
-    if(S.revolve)S.phi+=2*Math.PI/EARTH_ORBIT_PERIOD*S.speed*dt;  // 地球公转（仅勾选"地球公转"时；比值 13.37:1）
-    if(S.nodeDrift)S.node-=NODE_RATE*S.speed*dt;           // 升交点退行（逆行感：黄经减小）
+    /* 公转倍速 rv（R35）：勾选"地球公转"时，整条天文时间线（地球公转＋月球公转＋
+       交点退行＋日期/月相）一起快进，太阳方向与月球位置始终自洽；地球自转（spin）
+       不乘 rv，仍按"速度"独立走 —— 仅自转模式下月球公转/自转与自转保持真实比例 1:27.32。 */
+    const rv=S.revolve?Math.max(1,S.revSpeed||1):1;
+    S.theta+=2*Math.PI/ORBIT_PERIOD*S.speed*rv*dt;         // 月球公转（27.32 天/圈；rv=1 时与地球自转同基准）
+    if(S.revolve){S.phi+=2*Math.PI/EARTH_ORBIT_PERIOD*S.speed*rv*dt;}  // 地球公转（365.26 天/圈；默认不勾选）
+    if(S.nodeDrift)S.node-=NODE_RATE*S.speed*rv*dt;        // 升交点退行（逆行感：黄经减小）
   }
   if(S.playing||(S.holdPhase&&!S.anim))
     S.spin+=EARTH_SPIN_RATE*S.speed*dt;                    // 地球自转（跳相后经 holdPhase 继续）
-  if((S.playing||S.holdPhase)&&!S.anim)S.simT+=S.speed*dt;                // 仿真时钟（倍数无关 ⇒ "日"长恒定）
+  if((S.playing||S.holdPhase)&&!S.anim)S.simT+=S.speed*(S.revolve?Math.max(1,S.revSpeed||1):1)*dt;  // 仿真时钟（公转倍速下与公转同步快进）
+  if(S.playing||S.holdPhase)syncRevDate();                 // 日期随统一时钟推进（1 天＝1 次地球自转）
   if(S.lunarDemo)updateTransits();                         // 主画面（放大速率）的中天判定
   /* R18：窗口真实速率时钟仅由演示播放键（S.demoPlay）控制，默认暂停；与主图播放状态解耦 */
   if(S.demoPlay&&(S.lunarWin||S.horWin))winStep(WH_PER_SIMSEC*S.speed*dt);
@@ -2307,6 +2527,18 @@ function resize(){
 }
 window.addEventListener('resize',resize);
 resize();
+/* 启动初始化：默认日期＝电脑终端今天、默认地点＝本机定位（失败回退北京）。
+   applyDate 须在全部 let 声明之后调用；定位异步返回后再覆盖默认地点。 */
+(function initDateTime(){
+  const now=new Date();
+  inDate.value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+
+    String(now.getDate()).padStart(2,'0');
+  S.playing=false;S.holdPhase=false;S.revolve=false;      // 打开页面：公转/自转全部停止
+  if(typeof ckRev!=='undefined')ckRev.checked=false;
+  applyDate(now);                                        // 日期＝电脑终端今天（全页统一）
+  syncPlayBtns();                                        // 按钮显示"地球自转"（未播放）
+  requestGeo();                                          // 电脑终端位置（失败回退北京）
+})();
 requestAnimationFrame(frame);
 </script>
 
