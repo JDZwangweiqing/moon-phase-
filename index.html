@@ -57,6 +57,9 @@
   #hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
     color:rgba(255,255,255,.42);font-size:12px;letter-spacing:1px;z-index:10;
     background:rgba(10,22,44,.55);padding:5px 14px;border-radius:20px;white-space:nowrap;}
+  #moonNote{position:absolute;left:14px;width:262px;box-sizing:border-box;z-index:9;pointer-events:none;
+    color:#9fb0c8;font-size:12px;line-height:1.6;text-align:center;
+    background:rgba(10,22,44,.35);padding:6px 10px;border-radius:10px;}
   #err{position:absolute;bottom:52px;right:16px;color:#ff9a8a;font-size:13px;z-index:20;max-width:40%;
     text-align:right;pointer-events:none;}
   /* 太阴日 · 右上角可隐藏浮动窗口 */
@@ -168,6 +171,7 @@
     <label><input type="checkbox" id="ckIncl" checked>黄道/白道面</label>
   </div>
   </div>
+<div id="moonNote">月球八相指北半球地平面上观察到的月相，不是月球光照图。</div>
 <div id="lunarWin" style="display:none;">
   <div class="lwHead">
     <span class="lwTitle">太阴日 · 放大演示<small>以地球为中心（俯视北极）</small></span>
@@ -1601,7 +1605,11 @@ function applyHorMax(){
 }
 document.getElementById('btnLunarMax').onclick=()=>{S.lunarMax=!S.lunarMax;applyLunarMax();};
 document.getElementById('btnHorMax').onclick=()=>{S.horMax=!S.horMax;applyHorMax();};
-addEventListener('resize',()=>{if(S.lunarMax)applyLunarMax();if(S.horMax)applyHorMax();placeHorWin();if(S.horWin)drawHorizonMini();});
+addEventListener('resize',()=>{if(S.lunarMax)applyLunarMax();if(S.horMax)applyHorMax();placeHorWin();if(S.horWin)drawHorizonMini();placeMoonNote();});
+/* R38：面板正下方说明文字（月球八相＝北半球地面视角） */
+const moonNote=document.getElementById('moonNote'),panelEl=document.getElementById('panel');
+function placeMoonNote(){moonNote.style.top=Math.round(panelEl.getBoundingClientRect().bottom+12)+'px';}
+placeMoonNote();
 window.__lunarWinInfo=()=>({win:S.lunarWin,min:S.lunarMin,winDisp:lunarWin.style.display,
   bodyDisp:lunarBody.style.display,
   horWin:S.horWin,horDisp:horWin.style.display,chipDisp:lunarChip.style.display,
